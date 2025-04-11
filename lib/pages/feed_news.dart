@@ -1,6 +1,206 @@
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import '../config.dart';
+
+// class FeedNews extends StatefulWidget {
+//   const FeedNews({super.key});
+
+//   @override
+//   State<FeedNews> createState() => _FeedNewsState();
+// }
+
+// class _FeedNewsState extends State<FeedNews> {
+//   Future<List<dynamic>> fetchNews() async {
+//     final response = await http.get(Uri.parse('${AppConfig.baseUrl}/news'));
+//     if (response.statusCode == 200) {
+//       return jsonDecode(response.body);
+//     } else {
+//       throw Exception('Failed to load news');
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF5F5F5),
+//       appBar: AppBar(
+//         backgroundColor: Colors.white,
+//         elevation: 0,
+//         leading: const BackButton(color: Colors.black),
+//         title: const Text("News Feed", style: TextStyle(color: Colors.black)),
+//       ),
+//       body: FutureBuilder<List<dynamic>>(
+//         future: fetchNews(),
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//           if (snapshot.hasError) {
+//             return Center(child: Text('Error: ${snapshot.error}'));
+//           }
+
+//           final newsList = snapshot.data!;
+//           final topNews = newsList.isNotEmpty ? newsList[0] : null;
+
+//           return SingleChildScrollView(
+//             child: Column(
+//               children: [
+//                 if (topNews != null) HighlightNewsCard(news: topNews),
+
+//                 Padding(
+//                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: const [
+//                       Text("Today News", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+//                       Text("See all", style: TextStyle(color: Colors.purple)),
+//                     ],
+//                   ),
+//                 ),
+
+//                 ListView.builder(
+//                   shrinkWrap: true,
+//                   physics: const NeverScrollableScrollPhysics(),
+//                   itemCount: newsList.length,
+//                   itemBuilder: (context, index) {
+//                     final news = newsList[index];
+//                     return TodayNewsItem(news: news);
+//                   },
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+// class HighlightNewsCard extends StatelessWidget {
+//   final dynamic news;
+
+//   const HighlightNewsCard({super.key, required this.news});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       children: [
+//         Container(
+//           margin: const EdgeInsets.all(16),
+//           clipBehavior: Clip.hardEdge,
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(16),
+//           ),
+//           child: Image.network(
+//             '${AppConfig.baseUrl}/images/${news['image']}',
+//             height: 200,
+//             width: double.infinity,
+//             fit: BoxFit.cover,
+//             errorBuilder: (context, error, stackTrace) => Container(
+//               height: 200,
+//               color: Colors.grey.shade300,
+//               alignment: Alignment.center,
+//               child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+//             ),
+//           ),
+//         ),
+//         Positioned(
+//           top: 24,
+//           left: 24,
+//           child: Text(
+//             news['publish_date'] ?? '',
+//             style: const TextStyle(color: Colors.white),
+//           ),
+//         ),
+//         Positioned(
+//           bottom: 24,
+//           left: 24,
+//           right: 24,
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(news['title'], style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+//               const SizedBox(height: 4),
+//               Container(
+//                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+//                 decoration: BoxDecoration(
+//                   color: Colors.blue.shade200,
+//                   borderRadius: BorderRadius.circular(20),
+//                 ),
+//                 child: const Text("แนะนำข่าวสารเพิ่มเติม", style: TextStyle(color: Colors.white, fontSize: 12)),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+// class TodayNewsItem extends StatelessWidget {
+//   final dynamic news;
+
+//   const TodayNewsItem({super.key, required this.news});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+//       padding: const EdgeInsets.all(8),
+//       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+//       child: Row(
+//         children: [
+//           ClipRRect(
+//             borderRadius: BorderRadius.circular(12),
+//             child: Image.network(
+//               '${AppConfig.baseUrl}/images/${news['image']}',
+//               height: 70,
+//               width: 70,
+//               fit: BoxFit.cover,
+//               errorBuilder: (context, error, stackTrace) => Container(
+//                 height: 70,
+//                 width: 70,
+//                 color: Colors.grey.shade300,
+//                 child: const Icon(Icons.broken_image, color: Colors.grey),
+//               ),
+//             ),
+//           ),
+//           const SizedBox(width: 12),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(news['title'], maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+//                 Text(news['publish_date'] ?? '', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+//                 const SizedBox(height: 4),
+//                 Row(
+//                   children: const [
+//                     Icon(Icons.remove_red_eye, color: Colors.grey, size: 16),
+//                     SizedBox(width: 4),
+//                     Text("3k", style: TextStyle(fontSize: 12)),
+//                     SizedBox(width: 12),
+//                     Icon(Icons.favorite, color: Colors.red, size: 16),
+//                     SizedBox(width: 4),
+//                     Text("2.2k", style: TextStyle(fontSize: 12)),
+//                     SizedBox(width: 12),
+//                     Icon(Icons.share, color: Colors.grey, size: 16),
+//                     SizedBox(width: 4),
+//                     Text("1.4k", style: TextStyle(fontSize: 12)),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
 import '../config.dart';
 
 class FeedNews extends StatefulWidget {
@@ -23,130 +223,164 @@ class _FeedNewsState extends State<FeedNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFFDFDFD),
       body: SafeArea(
-        child: FutureBuilder<List<dynamic>>(
-          future: fetchNews(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            const Text(
+              "News Feed",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: FutureBuilder<List<dynamic>>(
+                future: fetchNews(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
 
-            final newsList = snapshot.data!;
-            final topNews = newsList.first;
+                  final newsList = snapshot.data!;
+                  final topNews = newsList.isNotEmpty ? newsList[0] : null;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Center(
-                    child: Text(
-                      "News Feed",
-                      style: Theme.of(context).textTheme.titleLarge,
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        if (topNews != null) HighlightNewsCard(news: topNews),
+
+                        // Header: Today News
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text("Today News", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text("See all", style: TextStyle(color: Colors.purple)),
+                            ],
+                          ),
+                        ),
+
+                        // List
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: newsList.length,
+                          itemBuilder: (context, index) {
+                            final news = newsList[index];
+                            return TodayNewsItem(news: news);
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-
-                // Top Highlight News
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.deepPurple.shade900,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        '${AppConfig.baseUrl}/images/${topNews['image']}',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
-                      ),
-                      Positioned(
-                        top: 12,
-                        left: 12,
-                        child: Text(
-                          topNews['publish_date'].toString().split(" ").first,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 16,
-                        left: 16,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              topNews['title'],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                "แนะนำข่าวสารเพิ่มเติม",
-                                style: TextStyle(color: Colors.white, fontSize: 12),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Title "Today News"
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Today News",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text("See all", style: TextStyle(color: Colors.purple)),
-                    ],
-                  ),
-                ),
-
-                // News list
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: newsList.length,
-                    itemBuilder: (context, index) {
-                      final news = newsList[index];
-                      return NewsListTile(news: news);
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class NewsListTile extends StatelessWidget {
+class HighlightNewsCard extends StatelessWidget {
   final dynamic news;
 
-  const NewsListTile({super.key, required this.news});
+  const HighlightNewsCard({super.key, required this.news});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Stack(
+              children: [
+                Image.network(
+                  '${AppConfig.baseUrl}/images/${news['image']}',
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 200,
+                    color: Colors.grey.shade300,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  news['publish_date'] ?? '',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  news['title'],
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 6),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlueAccent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                      Navigator.pushNamed(context, '/add_news');
+                      },
+                      style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.lightBlueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      ),
+                      child: const Text("แนะนำข่าวสารเพิ่มเติม", style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TodayNewsItem extends StatelessWidget {
+  final dynamic news;
+
+  const TodayNewsItem({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +394,18 @@ class NewsListTile extends StatelessWidget {
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             child: Image.network(
               '${AppConfig.baseUrl}/images/${news['image']}',
-              height: 60,
-              width: 60,
+              height: 70,
+              width: 70,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: 70,
+                width: 70,
+                color: Colors.grey.shade300,
+                child: const Icon(Icons.broken_image, color: Colors.grey),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -177,12 +417,9 @@ class NewsListTile extends StatelessWidget {
                   news['title'],
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  news['publish_date'].toString().split(" ").first,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
+                Text(news['publish_date'] ?? '', style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 const SizedBox(height: 4),
                 Row(
                   children: const [

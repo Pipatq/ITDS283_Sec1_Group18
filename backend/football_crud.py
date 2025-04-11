@@ -93,4 +93,20 @@ def get_all_standings():
     conn.close()
     return standings
 
+def get_all_news():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM news WHERE verify = TRUE ORDER BY publish_date DESC")
+    news = cursor.fetchall()
+    conn.close()
+    return news
 
+
+
+# def get_all_news():
+#     conn = get_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     cursor.execute("SELECT * FROM news ORDER BY publish_date DESC")
+#     news = cursor.fetchall()
+#     conn.close()
+#     return news

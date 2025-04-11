@@ -3,6 +3,7 @@ import 'pages/home_page.dart';
 import 'pages/standing_page.dart';
 import 'pages/tournament_schedule.dart';
 import 'pages/feed_news.dart';
+import 'pages/add_news.dart';
 void main() {
   runApp(const MatchScoreApp());
 }
@@ -21,6 +22,7 @@ class MatchScoreApp extends StatelessWidget {
       ),
       routes: {
         '/tournament_schedule': (context) => const TournamentSchedule(),
+        '/add_news': (context) => const AddNewsPage(),
       },
       home: const MainNavigation(),
       

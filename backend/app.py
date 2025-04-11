@@ -2,15 +2,57 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask import Flask, send_from_directory
 import os
-
+from werkzeug.utils import secure_filename
 import football_crud
 import socket
-
+from db_config import get_connection
 app = Flask(__name__)
 CORS(app)
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 IMAGE_FOLDER = os.path.join(BASE_DIR, 'assets', 'images')
+
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'assets', 'images')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # สร้างโฟลเดอร์ถ้ายังไม่มี
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/add_news', methods=['POST'])
+def add_news():
+    data = request.form
+    image = request.files.get('image')
+
+    filename = None
+    if image:
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        try:
+            image.save(image_path)
+        except Exception as e:
+            return jsonify({'error': f'Failed to save image: {str(e)}'}), 500
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO news (title, sport_type, description, source, contact_phone, contact_email, image, publish_date, verify)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), FALSE)
+    """, (
+        data.get('title'),
+        data.get('sport_type'),
+        data.get('description'),
+        data.get('source'),
+        data.get('contact_phone'),
+        data.get('contact_email'),
+        filename
+    ))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return jsonify({'message': 'News added successfully'})
+
+
+
 
 @app.route('/matches', methods=['GET'])
 def get_matches():
