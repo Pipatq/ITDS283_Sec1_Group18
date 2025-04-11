@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 import 'pages/standing_page.dart';
-
+import 'pages/tournament_schedule.dart';
+import 'pages/feed_news.dart';
 void main() {
   runApp(const MatchScoreApp());
 }
@@ -18,7 +19,11 @@ class MatchScoreApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF5F5F5),
       ),
+      routes: {
+        '/tournament_schedule': (context) => const TournamentSchedule(),
+      },
       home: const MainNavigation(),
+      
     );
   }
 }
@@ -27,7 +32,12 @@ class MainNavigation extends StatelessWidget {
   const MainNavigation({super.key});
 
   void _onItemTapped(BuildContext context, int index) {
-    if (index == 0) return; // Home is already on screen
+    if (index == 0) 
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
+        );
+    ; // Home is already on screen
     if (index == 1) {
       Navigator.push(
         context,
@@ -37,7 +47,7 @@ class MainNavigation extends StatelessWidget {
     if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const StandingPage()),
+        MaterialPageRoute(builder: (context) => const FeedNews()),
       );
     }
 
