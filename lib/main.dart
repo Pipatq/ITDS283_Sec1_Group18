@@ -34,6 +34,13 @@ class MainNavigation extends StatelessWidget {
         MaterialPageRoute(builder: (context) => const StandingPage()),
       );
     }
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const StandingPage()),
+      );
+    }
+
   }
 
   @override

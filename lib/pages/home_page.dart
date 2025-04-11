@@ -24,17 +24,6 @@ class MatchScoreHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 0,
-      //   selectedItemColor: Colors.deepPurple,
-      //   unselectedItemColor: Colors.black54,
-      //   // items: const [
-      //   //   BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-      //   //   BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
-      //   //   BottomNavigationBarItem(icon: Icon(Icons.list), label: ''),
-      //   //   BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-      //   // ],
-      // ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
