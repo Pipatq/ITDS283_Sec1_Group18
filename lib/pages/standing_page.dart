@@ -150,7 +150,7 @@ class _StandingPageState extends State<StandingPage> {
                       Expanded(child: Text("W", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70))),
                       Expanded(child: Text("D", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70))),
                       Expanded(child: Text("L", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70))),
-                      Expanded(child: Text("Poin", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70))),
+                      Expanded(child: Text("Poinst", textAlign: TextAlign.center, style: TextStyle(color: Colors.white70))),
                     ],
                   ),
                   const Divider(color: Colors.white24),
@@ -178,9 +178,9 @@ class _StandingPageState extends State<StandingPage> {
                                         backgroundColor: Colors.grey.shade300,
                                         child: ClipOval(
                                           child: Image.network(
-                                            '${AppConfig.baseUrl}/images/${team['logo']}',
-                                            height: 20,
-                                            width: 20,
+                                            '${AppConfig.baseUrl}/images/${team['team_logo']}',
+                                            height: 10,
+                                            width: 10,
                                             fit: BoxFit.cover,
                                             errorBuilder: (context, error, stackTrace) =>
                                                 const Icon(Icons.error, size: 10, color: Colors.grey),
@@ -255,3 +255,5 @@ class DotLegend extends StatelessWidget {
     );
   }
 }
+
+
