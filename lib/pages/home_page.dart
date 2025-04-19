@@ -3,8 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../config.dart';
-import 'tournament_schedule.dart';
-import 'profile.dart';
+// import 'tournament_schedule.dart';
+// import 'profile.dart';
+import 'final_score.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -74,12 +75,12 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   avatarUrl != null
                       ? CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.grey.shade200,
-                          backgroundImage: NetworkImage(avatarUrl!),
-                          onBackgroundImageError: (_, __) =>
-                              const Icon(Icons.error),
-                        )
+                        radius: 20,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage: NetworkImage(avatarUrl!),
+                        onBackgroundImageError:
+                            (_, __) => const Icon(Icons.error),
+                      )
                       : const SizedBox(width: 40),
                   const Text(
                     'Match Score',
@@ -94,14 +95,18 @@ class _HomePageState extends State<HomePage> {
                 children: List.generate(dateOptions.length, (index) {
                   return GestureDetector(
                     child: DateChip(
-                      text: index == 0 ? 'Today' : formatDate(dateOptions[index]),
+                      text:
+                          index == 0 ? 'Today' : formatDate(dateOptions[index]),
                       selected: index == selectedDateIndex,
                     ),
                   );
                 }),
               ),
               const SizedBox(height: 20),
-              const Text("Live Match", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const Text(
+                "Live Match",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 12),
               FutureBuilder<List<dynamic>>(
                 future: fetchMatches(),
@@ -113,13 +118,21 @@ class _HomePageState extends State<HomePage> {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   }
                   final today = getTodayDateString();
-                  final todayMatches = snapshot.data!.where((m) => m['match_date'] == today).toList();
+                  final todayMatches =
+                      snapshot.data!
+                          .where((m) => m['match_date'] == today)
+                          .toList();
 
                   if (todayMatches.isEmpty) {
-                    return const Text('No matches today', style: TextStyle(color: Colors.grey));
+                    return const Text(
+                      'No matches today',
+                      style: TextStyle(color: Colors.grey),
+                    );
                   }
 
-                  todayMatches.retainWhere((match) => match['status'] == 'live');
+                  todayMatches.retainWhere(
+                    (match) => match['status'] == 'live',
+                  );
                   if (todayMatches.length > 3) {
                     todayMatches.removeRange(3, todayMatches.length);
                   }
@@ -133,14 +146,28 @@ class _HomePageState extends State<HomePage> {
                         final match = todayMatches[index];
                         return Padding(
                           padding: const EdgeInsets.only(right: 12),
-                          child: LiveMatchCard(
-                            homeName: match['team_home_name'],
-                            awayName: match['team_away_name'],
-                            homeLogo: '${AppConfig.baseUrl}/images/${match['team_home_logo']}',
-                            awayLogo: '${AppConfig.baseUrl}/images/${match['team_away_logo']}',
-                            scoreHome: match['score_home'],
-                            scoreAway: match['score_away'],
-                            week: match['week'].toString(),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) =>
+                                          FinalScorePage(matchId: match['id']),
+                                ),
+                              );
+                            },
+                            child: LiveMatchCard(
+                              homeName: match['team_home_name'],
+                              awayName: match['team_away_name'],
+                              homeLogo:
+                                  '${AppConfig.baseUrl}/images/${match['team_home_logo']}',
+                              awayLogo:
+                                  '${AppConfig.baseUrl}/images/${match['team_away_logo']}',
+                              scoreHome: match['score_home'],
+                              scoreAway: match['score_away'],
+                              week: match['week'].toString(),
+                            ),
                           ),
                         );
                       },
@@ -152,12 +179,18 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Matches", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Matches",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/tournament_schedule');
                     },
-                    child: const Text("See all", style: TextStyle(color: Colors.purple)),
+                    child: const Text(
+                      "See all",
+                      style: TextStyle(color: Colors.purple),
+                    ),
                   ),
                 ],
               ),
@@ -173,11 +206,17 @@ class _HomePageState extends State<HomePage> {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     }
                     final today = getTodayDateString();
-                    final todayMatches = snapshot.data!.where((m) => m['match_date'] == today).toList();
+                    final todayMatches =
+                        snapshot.data!
+                            .where((m) => m['match_date'] == today)
+                            .toList();
 
                     if (todayMatches.isEmpty) {
                       return const Center(
-                        child: Text('No matches available', style: TextStyle(color: Colors.grey)),
+                        child: Text(
+                          'No matches available',
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       );
                     }
 
@@ -188,8 +227,10 @@ class _HomePageState extends State<HomePage> {
                         return MatchItem(
                           team1: match['team_home_name'],
                           team2: match['team_away_name'],
-                          logo1: '${AppConfig.baseUrl}/images/${match['team_home_logo']}',
-                          logo2: '${AppConfig.baseUrl}/images/${match['team_away_logo']}',
+                          logo1:
+                              '${AppConfig.baseUrl}/images/${match['team_home_logo']}',
+                          logo2:
+                              '${AppConfig.baseUrl}/images/${match['team_away_logo']}',
                           time: match['match_time'],
                           date: match['match_date'],
                         );
@@ -271,7 +312,14 @@ class LiveMatchCard extends StatelessWidget {
               const Text("Live Now", style: TextStyle(color: Colors.white70)),
               Text("Week $week", style: const TextStyle(color: Colors.white70)),
               const SizedBox(height: 8),
-              Text("$scoreHome : $scoreAway", style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+              Text(
+                "$scoreHome : $scoreAway",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           TeamInfo(name: awayName, homeAway: "Away", logo: awayLogo),
@@ -286,7 +334,12 @@ class TeamInfo extends StatelessWidget {
   final String homeAway;
   final String logo;
 
-  const TeamInfo({super.key, required this.name, required this.homeAway, required this.logo});
+  const TeamInfo({
+    super.key,
+    required this.name,
+    required this.homeAway,
+    required this.logo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -302,13 +355,18 @@ class TeamInfo extends StatelessWidget {
               height: 40,
               width: 40,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error, color: Colors.white),
+              errorBuilder:
+                  (context, error, stackTrace) =>
+                      const Icon(Icons.error, color: Colors.white),
             ),
           ),
         ),
         const SizedBox(height: 8),
         Text(name, style: const TextStyle(color: Colors.white, fontSize: 12)),
-        Text(homeAway, style: const TextStyle(color: Colors.white70, fontSize: 10)),
+        Text(
+          homeAway,
+          style: const TextStyle(color: Colors.white70, fontSize: 10),
+        ),
       ],
     );
   }
@@ -322,7 +380,15 @@ class MatchItem extends StatelessWidget {
   final String? logo1;
   final String? logo2;
 
-  const MatchItem({super.key, required this.team1, required this.team2, required this.time, required this.date, this.logo1, this.logo2});
+  const MatchItem({
+    super.key,
+    required this.team1,
+    required this.team2,
+    required this.time,
+    required this.date,
+    this.logo1,
+    this.logo2,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -345,14 +411,29 @@ class MatchItem extends StatelessWidget {
                   height: 28,
                   width: 28,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.error, size: 14),
+                  errorBuilder:
+                      (context, error, stackTrace) =>
+                          const Icon(Icons.error, size: 14),
                 ),
               ),
             ),
           const SizedBox(width: 8),
-          Expanded(flex: 3, child: Text(team1, style: const TextStyle(fontWeight: FontWeight.w600))),
+          Expanded(
+            flex: 3,
+            child: Text(
+              team1,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
           Expanded(flex: 2, child: Center(child: Text(time))),
-          Expanded(flex: 3, child: Text(team2, textAlign: TextAlign.end, style: const TextStyle(fontWeight: FontWeight.w600))),
+          Expanded(
+            flex: 3,
+            child: Text(
+              team2,
+              textAlign: TextAlign.end,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
           const SizedBox(width: 8),
           if (logo2 != null)
             CircleAvatar(
@@ -364,7 +445,9 @@ class MatchItem extends StatelessWidget {
                   height: 28,
                   width: 28,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.error, size: 14),
+                  errorBuilder:
+                      (context, error, stackTrace) =>
+                          const Icon(Icons.error, size: 14),
                 ),
               ),
             ),
