@@ -169,6 +169,18 @@ def get_player_by_id(player_id):
     else:
         return jsonify({"error": "Player not found"}), 404
 
+@app.route('/')
+def index():
+    return '''
+        <h2>✅ Flask API is Live</h2>
+        <p>Try these endpoints:</p>
+        <ul>
+            <li><a href="/news">/news</a></li>
+            <li><a href="/matches">/matches</a></li>
+            <li><a href="/standings">/standings</a></li>
+        </ul>
+    '''
+
 
 if __name__ == '__main__':
     hostname = socket.gethostname()
