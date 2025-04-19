@@ -37,7 +37,7 @@ class _TournamentSchedulePageState extends State<TournamentSchedule> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: const Text('Premier League'),
+        title: const Text('Football League'),
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
