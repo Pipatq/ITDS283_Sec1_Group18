@@ -1,0 +1,27 @@
+# Environment files
+.env
+.env.*
+
+# SSL certificates
+*.pem
+isrgrootx1.pem
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Databases
+*.sqlite3
+*.db
+
+# Flask instance folder
+instance/
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store

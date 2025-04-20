@@ -1,6 +1,8 @@
 from db_config import get_connection
 import datetime
 
+
+
 def serialize(matches):
     for match in matches:
         for key, val in match.items():
