@@ -172,7 +172,10 @@ def get_player_by_id(player_id):
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e54a2865617835b33bc5e5998a46f5d062e3ef9b
 if __name__ == '__main__':
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
