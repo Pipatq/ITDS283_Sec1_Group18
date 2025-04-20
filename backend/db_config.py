@@ -1,27 +1,3 @@
-# import mysql.connector
-
-# def get_connection():
-#     return mysql.connector.connect(
-#         host='localhost',
-#         user='root',
-#         password='',
-#         database='football',
-#     )
-
-
-# import mysql.connector
-# def get_connection():
-#     return mysql.connector.connect(
-#         host = "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-#         port = 4000,
-#         user = "4SogGgVti3txabK.root",
-#         password = "CXHHLturkn3F9GJK",
-#         database = "football",
-#         ssl_ca= "C:/Users/pipat/Documents/flutter/Project/index/backend/isrgrootx1.pem",
-#         ssl_verify_cert = True,
-#         ssl_verify_identity = True
-#     )
-    
 from dotenv import load_dotenv
 import os
 import mysql.connector
